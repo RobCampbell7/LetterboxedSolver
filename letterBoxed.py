@@ -49,7 +49,6 @@ def usedLetters(word):
             foundLetters.append(char)
     return len(foundLetters)
 
-
 def findWords(wordFile, sides, includeCaps=False):
     """Yield every word in wordFile that can be traced on the puzzle.
 
@@ -65,7 +64,6 @@ def findWords(wordFile, sides, includeCaps=False):
                 continue
             if possible(word, sides):
                 yield word
-
 
 def solve(words, maxWords=3):
     """Return the solutions found, as a list of tuples of words.

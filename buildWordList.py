@@ -11,7 +11,7 @@ and reused after that. Adjust the filters in allow() to change what makes it int
 import os
 import urllib.request
 
-from letterBoxed import BIG_WORD_FILE, MIN_LENGTH, WORD_FILE
+from letterBoxed import BIG_WORD_FILE, MIN_LENGTH, WORD_FILE, PUZZLE_LETTERS
 
 CWD = os.path.dirname(os.path.abspath(__file__))
 SOURCE_DIR = os.path.join(CWD, "sources")
@@ -23,14 +23,34 @@ SCOWL_SOURCE = "scowl.txt"
 SCOWL_URL = ("https://raw.githubusercontent.com/nlile/dictionary-word-list"
              "/master/largest_possible_aspell_wordlist_without_diacritic.txt")
 
+def doubleLetter(s):
+    """Return True if word contains a double letter"""
+    for i in range(1, len(s)):
+        if s[i] == s[i - 1]:
+            return True
+    return False
+
+def uniqueCharLimit(word, limit=PUZZLE_LETTERS):
+    letters = []
+    for c in word:
+        if c not in letters:
+            letters.append(c)
+    return len(letters) <= limit
 
 def allow(word):
     """Return True if word is worth keeping in a built list.
 
     Anything shorter than the puzzle's minimum, or carrying a character that cannot be traced on the
     puzzle, is dead weight.
+    If the word contains a double letter or is made up of more than 12 characters it can be removed.
     """
-    return len(word) >= MIN_LENGTH and word.isascii() and word.isalpha()
+    return (
+        len(word) >= MIN_LENGTH
+        and word.isascii()
+        and word.isalpha()
+        and not doubleLetter(word)
+        and uniqueCharLimit(word)
+    )
 
 
 def fetchSource(fileName, url):

@@ -38,7 +38,6 @@ def readPuzzle():
         raise SystemExit("The %d letters must all be different." % PUZZLE_LETTERS)
     return tuple(sides)
 
-
 def printSolutions(solutions, limit):
     if len(solutions) == 0:
         print("\nNo solutions found. Try again with -b, or allow more words with -w.")
@@ -51,7 +50,6 @@ def printSolutions(solutions, limit):
     if len(shown) < len(solutions):
         print("... and %d more" % (len(solutions) - len(shown)))
 
-
 def main():
     args = parseArgs()
     wordFile = BIG_WORD_FILE if args.big else WORD_FILE
@@ -59,7 +57,6 @@ def main():
 
     words = list(findWords(wordFile, sides, args.caps))
     printSolutions(solve(words, args.words), args.limit)
-
 
 if __name__ == "__main__":
     main()
