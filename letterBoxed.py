@@ -103,14 +103,73 @@ def convert(word, index, flatSides):
 
     return (start, end, index, bitmask)
 
-def solve(words, sides, maxWords=3):
-    """Return the solutions found, as a list of tuples of words.
+# def solve(words, sides, maxWords=3):
+#     """Return the solutions found, as a list of tuples of words.
 
-    One word solutions are looked for first, then two, then three, and the search stops at the first
-    count that finds anything. Within a count the solutions come back shortest first, counting total
-    letters.
+#     One word solutions are looked for first, then two, then three, and the search stops at the first
+#     count that finds anything. Within a count the solutions come back shortest first, counting total
+#     letters.
+#     """
+#     solutions = [(word,) for word in words if usedLetters(word) == PUZZLE_LETTERS]
+
+#     flatSides = flatten(sides)
+#     convertedWords = [convert(words[i].upper(), i, flatSides) for i in range(len(words))]
+
+#     initLtrBuckets = [[] for i in range(PUZZLE_LETTERS)]
+#     for word in convertedWords:
+#         initLtrBuckets[word[0]].append(word)
+
+#     if len(solutions) == 0 and maxWords >= 2:
+#         for word1 in convertedWords:
+#             for word2 in initLtrBuckets[word1[1]]:
+#                 if word1[3] | word2[3] == BITMASK_TARGET:
+#                     solutions.append((words[word1[2]], words[word2[2]]))
+
+#     if len(solutions) == 0 and maxWords >= 3:
+#         for word1 in convertedWords:
+#             for word2 in initLtrBuckets[word1[1]]:
+#                 for word3 in initLtrBuckets[word2[1]]:
+#                     if word1[3] | word2[3] | word3[3] == BITMASK_TARGET:
+#                         solutions.append((words[word1[2]], words[word2[2]], words[word3[2]]))
+
+#     if len(solutions) == 0 and maxWords >= 4:
+#         for word1 in convertedWords:
+#             for word2 in initLtrBuckets[word1[1]]:
+#                 for word3 in initLtrBuckets[word2[1]]:
+#                     for word4 in initLtrBuckets[word3[1]]:
+#                         if word1[3] | word2[3] | word3[3] | word4[3] == BITMASK_TARGET:
+#                             solutions.append((words[word1[2]], words[word2[2]], words[word3[2]], words[word4[2]]))
+
+#     solutions.sort(key=lambda chain: sum(len(word) for word in chain))
+#     return solutions
+
+def bitwiseOrOnList(convertedWords):
+    res = 0
+    for n in convertedWords:
+        res |= n[3]
+    return res
+
+def recursiveSolve(words, sides, maxWords):
+    """Return the solutions found, as a list of tuples of words.
+    
+    This method finds all solutions up to the length provided, sorted by length.
     """
-    solutions = [(word,) for word in words if usedLetters(word) == PUZZLE_LETTERS]
+    res, sol = [], []
+    def recur(wordLimit):
+        if bitwiseOrOnList(sol) == BITMASK_TARGET:
+            res.append(tuple(words[w[2]] for w in sol))
+        elif wordLimit == 0:
+            return
+        elif len(sol) == 0:
+            for w in convertedWords:
+                sol.append(w)
+                recur(wordLimit - 1)
+                sol.pop()
+        else:
+            for w in initLtrBuckets[sol[-1][1]]:
+                sol.append(w)
+                recur(wordLimit - 1)
+                sol.pop()
 
     flatSides = flatten(sides)
     convertedWords = [convert(words[i].upper(), i, flatSides) for i in range(len(words))]
@@ -119,26 +178,6 @@ def solve(words, sides, maxWords=3):
     for word in convertedWords:
         initLtrBuckets[word[0]].append(word)
 
-    if len(solutions) == 0 and maxWords >= 2:
-        for word1 in convertedWords:
-            for word2 in initLtrBuckets[word1[1]]:
-                if word1[3] | word2[3] == BITMASK_TARGET:
-                    solutions.append((words[word1[2]], words[word2[2]]))
+    recur(maxWords)
 
-    if len(solutions) == 0 and maxWords >= 3:
-        for word1 in convertedWords:
-            for word2 in initLtrBuckets[word1[1]]:
-                for word3 in initLtrBuckets[word2[1]]:
-                    if word1[3] | word2[3] | word3[3] == BITMASK_TARGET:
-                        solutions.append((words[word1[2]], words[word2[2]], words[word3[2]]))
-
-    if len(solutions) == 0 and maxWords >= 4:
-        for word1 in convertedWords:
-            for word2 in initLtrBuckets[word1[1]]:
-                for word3 in initLtrBuckets[word2[1]]:
-                    for word4 in initLtrBuckets[word3[1]]:
-                        if word1[3] | word2[3] | word3[3] | word4[3] == BITMASK_TARGET:
-                            solutions.append((words[word1[2]], words[word2[2]], words[word3[2]], words[word4[2]]))
-
-    solutions.sort(key=lambda chain: sum(len(word) for word in chain))
-    return solutions
+    return sorted(res, key=lambda chain:(len(chain), sum(len(word) for word in chain)))

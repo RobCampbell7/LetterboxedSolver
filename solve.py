@@ -7,7 +7,7 @@ printed shortest first. See --help for the word list and output switches.
 import argparse
 
 from letterBoxed import (BIG_WORD_FILE, LETTERS_PER_SIDE, PUZZLE_LETTERS, SIDE_COUNT, WORD_FILE,
-                         findWords, solve)
+                         findWords, recursiveSolve)
 
 DEFAULT_LIMIT = 20
 
@@ -56,9 +56,10 @@ def main():
     wordFile = BIG_WORD_FILE if args.big else WORD_FILE
     # sides = readPuzzle()
     # print(sides)
-    sides = ('CBG', 'UAE', 'FLV', 'TDQ')
+    # sides = ('CBG', 'UAE', 'FLV', 'TDQ')
+    sides = ('VTU', 'BWI', 'NAO', 'EHS')
     words = list(findWords(wordFile, sides, args.caps))
-    printSolutions(solve(words, sides, args.words), args.limit)
+    printSolutions(recursiveSolve(words, sides, args.words), args.limit)
 
 if __name__ == "__main__":
     main()
