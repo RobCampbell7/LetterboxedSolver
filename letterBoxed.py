@@ -118,29 +118,27 @@ def solve(words, sides, maxWords=3):
     initLtrBuckets = [[] for i in range(PUZZLE_LETTERS)]
     for word in convertedWords:
         initLtrBuckets[word[0]].append(word)
+
     if len(solutions) == 0 and maxWords >= 2:
         for word1 in convertedWords:
             for word2 in initLtrBuckets[word1[1]]:
                 if word1[3] | word2[3] == BITMASK_TARGET:
                     solutions.append((words[word1[2]], words[word2[2]]))
 
-    # if len(solutions) == 0 and maxWords >= 2:
-    #     for i in range(len(words)):
-    #         for j in range(len(words)):
-    #             if i != j:
-    #                 if (words[i][-1] == words[j][0]
-    #                         and usedLetters(words[i] + words[j]) == PUZZLE_LETTERS):
-    #                     solutions.append((words[i], words[j]))
+    if len(solutions) == 0 and maxWords >= 3:
+        for word1 in convertedWords:
+            for word2 in initLtrBuckets[word1[1]]:
+                for word3 in initLtrBuckets[word2[1]]:
+                    if word1[3] | word2[3] | word3[3] == BITMASK_TARGET:
+                        solutions.append((words[word1[2]], words[word2[2]], words[word3[2]]))
 
-    # if len(solutions) == 0 and maxWords >= 3:
-    #     for i in range(len(words)):
-    #         for j in range(len(words)):
-    #             for k in range(len(words)):
-    #                 if k != i and k != j and i != j:
-    #                     if words[i][-1] == words[j][0] and words[j][-1] == words[k][0]:
-    #                         joined = words[i] + words[j] + words[k]
-    #                         if usedLetters(joined) == PUZZLE_LETTERS:
-    #                             solutions.append((words[i], words[j], words[k]))
+    if len(solutions) == 0 and maxWords >= 4:
+        for word1 in convertedWords:
+            for word2 in initLtrBuckets[word1[1]]:
+                for word3 in initLtrBuckets[word2[1]]:
+                    for word4 in initLtrBuckets[word3[1]]:
+                        if word1[3] | word2[3] | word3[3] | word4[3] == BITMASK_TARGET:
+                            solutions.append((words[word1[2]], words[word2[2]], words[word3[2]], words[word4[2]]))
 
     solutions.sort(key=lambda chain: sum(len(word) for word in chain))
     return solutions
