@@ -64,8 +64,9 @@ def main():
     wordFile = BIG_WORD_FILE if args.big else WORD_FILE
     # sides = readPuzzle()
     # print(sides)
-    sides = ('CBG', 'UAE', 'FLV', 'TDQ')
-    # sides = ('VTU', 'BWI', 'NAO', 'EHS')
+    # sides = ('CBG', 'UAE', 'FLV', 'TDQ')
+    sides = ('VTU', 'BWI', 'NAO', 'EHS')
+    # sides = ('ERA', 'VLC', 'TIN', 'OSU')
     words = list(findWords(wordFile, sides, args.caps))
     printSolutions(recursiveSolve(words, sides, args.words), args.limit)
 

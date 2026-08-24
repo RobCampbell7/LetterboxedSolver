@@ -75,15 +75,6 @@ def flatten(twoDList):
                 yield item
     return [*flattenHidden(twoDList)]
 
-def decToInt(n, bits=8):
-    res = ""
-    while n > 0:
-        res = str(n & 1) + res
-        n >>= 1
-    if len(res) < bits:
-        res = (bits - len(res)) * "0" + res
-    return res
-
 def convert(word, index, flatSides):
     """Returns a tuple of four integers represnting that word in the new representation
 
@@ -143,17 +134,24 @@ def convert(word, index, flatSides):
 #     solutions.sort(key=lambda chain: sum(len(word) for word in chain))
 #     return solutions
 
-def bitwiseOrOnList(convertedWords):
-    res = 0
-    for n in convertedWords:
-        res |= n[3]
-    return res
+def maxPossibleLetters(convWords):
+    return max([w[3].bit_count() for w in convWords])
 
-def recursiveSolve(words, sides, maxWords):
+def recursiveSolve(words, sides, maxWords, pruning=True):
     """Return the solutions found, as a list of tuples of words.
     
     This method finds all solutions up to the length provided, sorted by length.
     """
+    
+    flatSides = flatten(sides)
+    convertedWords = [convert(words[i].upper(), i, flatSides) for i in range(len(words))]
+
+    initLtrBuckets = [[] for i in range(PUZZLE_LETTERS)]
+    for word in convertedWords:
+        initLtrBuckets[word[0]].append(word)
+
+    maxDistance = maxPossibleLetters(convertedWords)
+
     res, sol = [], []
     def recur(wordLimit, orSum=0):
         if len(sol) == 0:
@@ -167,18 +165,15 @@ def recursiveSolve(words, sides, maxWords):
         elif wordLimit == 0:
             return
         else:
+            if pruning == True:
+                missing = BITMASK_TARGET & ~orSum
+                if maxDistance * wordLimit < missing.bit_count():
+                    return
             for w in initLtrBuckets[sol[-1][1]]:
                 if w not in sol:
                     sol.append(w)
                     recur(wordLimit - 1, orSum | w[3])
                     sol.pop()
-
-    flatSides = flatten(sides)
-    convertedWords = [convert(words[i].upper(), i, flatSides) for i in range(len(words))]
-
-    initLtrBuckets = [[] for i in range(PUZZLE_LETTERS)]
-    for word in convertedWords:
-        initLtrBuckets[word[0]].append(word)
 
     recur(maxWords)
 
