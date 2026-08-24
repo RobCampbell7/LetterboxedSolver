@@ -155,20 +155,20 @@ def recursiveSolve(words, sides, maxWords):
     This method finds all solutions up to the length provided, sorted by length.
     """
     res, sol = [], []
-    def recur(wordLimit):
-        if bitwiseOrOnList(sol) == BITMASK_TARGET:
+    def recur(wordLimit, orSum=1):
+        if len(sol) == 0:
+            for w in convertedWords:
+                sol.append(w)
+                recur(wordLimit - 1, orSum | w[3])
+                sol.pop()
+        elif orSum == BITMASK_TARGET:
             res.append(tuple(words[w[2]] for w in sol))
         elif wordLimit == 0:
             return
-        elif len(sol) == 0:
-            for w in convertedWords:
-                sol.append(w)
-                recur(wordLimit - 1)
-                sol.pop()
         else:
             for w in initLtrBuckets[sol[-1][1]]:
                 sol.append(w)
-                recur(wordLimit - 1)
+                recur(wordLimit - 1, orSum | w[3])
                 sol.pop()
 
     flatSides = flatten(sides)
