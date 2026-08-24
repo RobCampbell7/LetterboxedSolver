@@ -43,9 +43,17 @@ def printSolutions(solutions, limit):
     if len(solutions) == 0:
         print("No solutions found. Try again with -b, or allow more words with -w.")
         return
+    solutionCounts = [0, 0, 0, 0, 0, 0]
+    for s in solutions:
+        solutionCounts[len(s) - 1] += 1
+
+    firstLine = "%d solutions found" % len(solutions)
+    for i in range(len(solutionCounts)):
+        if solutionCounts[i] != 0:
+            firstLine += ", %d in %d words" % (solutionCounts[i],  i + 1)
 
     shown = solutions if limit == 0 else solutions[:limit]
-    print("%d solutions in %d words:" % (len(solutions), len(solutions[0])))
+    print(firstLine)
     for chain in shown:
         print(" - ".join(chain))
     if len(shown) < len(solutions):
