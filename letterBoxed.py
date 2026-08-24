@@ -158,18 +158,20 @@ def recursiveSolve(words, sides, maxWords):
     def recur(wordLimit, orSum=1):
         if len(sol) == 0:
             for w in convertedWords:
-                sol.append(w)
-                recur(wordLimit - 1, orSum | w[3])
-                sol.pop()
+                if w not in sol:
+                    sol.append(w)
+                    recur(wordLimit - 1, orSum | w[3])
+                    sol.pop()
         elif orSum == BITMASK_TARGET:
             res.append(tuple(words[w[2]] for w in sol))
         elif wordLimit == 0:
             return
         else:
             for w in initLtrBuckets[sol[-1][1]]:
-                sol.append(w)
-                recur(wordLimit - 1, orSum | w[3])
-                sol.pop()
+                if w not in sol:
+                    sol.append(w)
+                    recur(wordLimit - 1, orSum | w[3])
+                    sol.pop()
 
     flatSides = flatten(sides)
     convertedWords = [convert(words[i].upper(), i, flatSides) for i in range(len(words))]
