@@ -56,7 +56,7 @@ def main():
     sides = readPuzzle()
 
     words = list(findWords(wordFile, sides, args.caps))
-    printSolutions(solve(words, args.words), args.limit)
+    printSolutions(solve(words, sides, args.words), args.limit)
 
 if __name__ == "__main__":
     main()
