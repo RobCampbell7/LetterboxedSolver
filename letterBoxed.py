@@ -155,7 +155,7 @@ def recursiveSolve(words, sides, maxWords):
     This method finds all solutions up to the length provided, sorted by length.
     """
     res, sol = [], []
-    def recur(wordLimit, orSum=1):
+    def recur(wordLimit, orSum=0):
         if len(sol) == 0:
             for w in convertedWords:
                 if w not in sol:
