@@ -18,7 +18,7 @@ def parseArgs():
     parser.add_argument("-c", "--caps", action="store_true",
                         help="also allow capitalised words, such as proper nouns")
     parser.add_argument("-np", "--no_pruning", action="store_true",
-                        help="also allow capitalised words, such as proper nouns")
+                        help="stop any pruning taking place in the recursion")
     parser.add_argument("-w", "--words", type=int, default=3, metavar="COUNT",
                         help="most words a solution may use (default: %(default)s)")
     parser.add_argument("-l", "--limit", type=int, default=DEFAULT_LIMIT, metavar="COUNT",
