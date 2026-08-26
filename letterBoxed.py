@@ -135,12 +135,15 @@ def convert(word, index, flatSides):
 #     return solutions
 
 def maxPossibleLetters(convWords):
+    """Returns the maximum possible number of letter a word can add to a solution"""
     return max([w[3].bit_count() for w in convWords])
 
 def recursiveSolve(words, sides, maxWords, pruning=True):
     """Return the solutions found, as a list of tuples of words.
     
-    This method finds all solutions up to the length provided, sorted by length.
+    This method finds all solutions up to the length provided.
+    The solutions are sorted by number of words, then by number of characters in those words.
+    So all solutions are grouped by number of words but within that they are sorted by length,
     """
     
     flatSides = flatten(sides)
@@ -151,7 +154,7 @@ def recursiveSolve(words, sides, maxWords, pruning=True):
         initLtrBuckets[word[0]].append(word)
 
     maxDistance = maxPossibleLetters(convertedWords)
-
+    maxDistByLetter = [maxPossibleLetters(bucket) for bucket in initLtrBuckets]
     res, sol = [], []
     def recur(wordLimit, orSum=0):
         if len(sol) == 0:
@@ -166,9 +169,13 @@ def recursiveSolve(words, sides, maxWords, pruning=True):
             return
         else:
             if pruning == True:
-                missing = BITMASK_TARGET & ~orSum
-                if maxDistance * wordLimit < missing.bit_count():
-                    return
+                # number of letters missing
+                missing = (BITMASK_TARGET & ~orSum).bit_count()
+                if wordLimit == 1:
+                    if maxDistByLetter[sol[-1][1]] < missing:
+                        return
+                elif maxDistance * wordLimit < missing:
+                        return
             for w in initLtrBuckets[sol[-1][1]]:
                 if w not in sol:
                     sol.append(w)
