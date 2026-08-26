@@ -134,6 +134,29 @@ def convert(word, index, flatSides):
 #     solutions.sort(key=lambda chain: sum(len(word) for word in chain))
 #     return solutions
 
+def buildReachTable(initLtrBuckets, maxWords):
+    """Return reach[k][letter]: every letter obtainable within k words starting from that letter.
+
+    This method is intentionally optimistic so we don't lose any solutions. It allows us to 
+    essentially choose all words at once, words can also be reused.
+    Optimistic on purpose. It unions across every word available at each step, as if you could take
+    them all at once rather than one per step, and it ignores that a word cannot be reused. So it
+    always covers at least what is genuinely achievable, which means it can only ever fail to
+    prune, never cut a branch that had a solution in it.
+    """
+    reach = [[0] * PUZZLE_LETTERS for step in range(maxWords + 1)]
+    for letter in range(PUZZLE_LETTERS):
+        for w in initLtrBuckets[letter]:
+            reach[1][letter] |= w[3]
+
+    for step in range(2, maxWords + 1):
+        for letter in range(PUZZLE_LETTERS):
+            covered = 0
+            for w in initLtrBuckets[letter]:
+                covered |= w[3] | reach[step - 1][w[1]]
+            reach[step][letter] = covered
+    return reach
+
 def maxPossibleLetters(convWords):
     """Returns the maximum possible number of letter a word can add to a solution"""
     return max([w[3].bit_count() for w in convWords])
@@ -153,6 +176,8 @@ def recursiveSolve(words, sides, maxWords, pruning=True):
     for word in convertedWords:
         initLtrBuckets[word[0]].append(word)
 
+    reach = buildReachTable(initLtrBuckets, maxWords)
+
     maxDistance = maxPossibleLetters(convertedWords)
     maxDistByLetter = [maxPossibleLetters(bucket) for bucket in initLtrBuckets]
     res, sol = [], []
@@ -169,13 +194,10 @@ def recursiveSolve(words, sides, maxWords, pruning=True):
             return
         else:
             if pruning == True:
-                # number of letters missing
-                missing = (BITMASK_TARGET & ~orSum).bit_count()
-                if wordLimit == 1:
-                    if maxDistByLetter[sol[-1][1]] < missing:
-                        return
-                elif maxDistance * wordLimit < missing:
-                        return
+                # missing = (BITMASK_TARGET & ~orSum).bit_count()
+                missing = BITMASK_TARGET & ~orSum
+                if missing & ~reach[wordLimit][sol[-1][1]]:
+                    return
             for w in initLtrBuckets[sol[-1][1]]:
                 if w not in sol:
                     sol.append(w)

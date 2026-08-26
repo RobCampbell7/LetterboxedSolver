@@ -17,6 +17,8 @@ def parseArgs():
                         help="use the larger, more obscure word list")
     parser.add_argument("-c", "--caps", action="store_true",
                         help="also allow capitalised words, such as proper nouns")
+    parser.add_argument("-np", "--no_pruning", action="store_true",
+                        help="also allow capitalised words, such as proper nouns")
     parser.add_argument("-w", "--words", type=int, default=3, metavar="COUNT",
                         help="most words a solution may use (default: %(default)s)")
     parser.add_argument("-l", "--limit", type=int, default=DEFAULT_LIMIT, metavar="COUNT",
@@ -68,7 +70,7 @@ def main():
     # sides = ('VTU', 'BWI', 'NAO', 'EHS')
     # sides = ('ERA', 'VLC', 'TIN', 'OSU')
     words = list(findWords(wordFile, sides, args.caps))
-    printSolutions(recursiveSolve(words, sides, args.words), args.limit)
+    printSolutions(recursiveSolve(words, sides, args.words, not args.no_pruning), args.limit)
 
 if __name__ == "__main__":
     main()
