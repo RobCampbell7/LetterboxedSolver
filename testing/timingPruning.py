@@ -1,14 +1,10 @@
-import os
-import sys
 from time import time
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
-
-import letterBoxed
+import letterBoxed # type: ignore
 
 if __name__=="__main__":
     puzzle = ('ABC', 'DEF', 'GHI', 'JKL')
-    maxWords = 5
+    maxWords = 4
     words = list(letterBoxed.findWords(letterBoxed.WORD_FILE, puzzle))
 
     start = time()

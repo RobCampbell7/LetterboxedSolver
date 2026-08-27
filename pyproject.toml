@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "letterboxed-solver"
+version = "0.1.0"
+description = "Solver for the NYT Letter Boxed puzzle"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.scripts]
+letterboxed = "solve:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+py-modules = ["letterBoxed", "solve", "buildWordList"]
