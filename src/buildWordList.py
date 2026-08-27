@@ -14,7 +14,7 @@ import urllib.request
 from letterBoxed import BIG_WORD_FILE, MIN_LENGTH, WORD_FILE, PUZZLE_LETTERS
 
 CWD = os.path.dirname(os.path.abspath(__file__))
-SOURCE_DIR = os.path.join(CWD, "sources")
+SOURCE_DIR = os.path.join(os.path.dirname(CWD), "sources")
 
 COLLINS_SOURCE = "CSW21.txt"
 COLLINS_URL = ("https://raw.githubusercontent.com/scrabblewords/scrabblewords"
