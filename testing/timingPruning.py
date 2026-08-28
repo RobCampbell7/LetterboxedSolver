@@ -1,6 +1,6 @@
 from time import time
 
-import letterBoxed # type: ignore
+from letterboxed import letterBoxed # type: ignore
 
 if __name__=="__main__":
     puzzle = ('ABC', 'DEF', 'GHI', 'JKL')

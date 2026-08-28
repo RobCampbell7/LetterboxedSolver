@@ -16,7 +16,7 @@ PUZZLE_LETTERS = SIDE_COUNT * LETTERS_PER_SIDE
 BITMASK_TARGET = 2 ** PUZZLE_LETTERS - 1
 
 CWD = os.path.dirname(os.path.abspath(__file__))
-PROJECT_DIR = os.path.dirname(CWD)
+PROJECT_DIR = os.path.dirname(os.path.dirname(CWD))
 WORD_FILE = os.path.join(PROJECT_DIR, "words.txt")
 BIG_WORD_FILE = os.path.join(PROJECT_DIR, "megaWords.txt")
 

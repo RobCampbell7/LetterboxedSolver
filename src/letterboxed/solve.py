@@ -7,7 +7,7 @@ printed shortest first. See --help for the word list and output switches.
 import argparse
 import time
 
-from letterBoxed import (BIG_WORD_FILE, LETTERS_PER_SIDE, PUZZLE_LETTERS, SIDE_COUNT, WORD_FILE,
+from .letterBoxed import (BIG_WORD_FILE, LETTERS_PER_SIDE, PUZZLE_LETTERS, SIDE_COUNT, WORD_FILE,
                          findWords, recursiveSolve)
 
 DEFAULT_PRINT_LIMIT = 20

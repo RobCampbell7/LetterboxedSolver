@@ -13,12 +13,13 @@ letterboxed -p ERA VLC TIN OSU
 
 Leave off `-p` and it asks you for the four sides one at a time.
 
-Don't remove the `-e` on the install. The word lists sit next to the code rather than inside the package
-and the solver goes looking for them relative to its own file, so a plain `pip install .` dumps the
-code in site-packages, leaves the lists behind, and then can't find them.
+Don't remove the `-e` on the install. The word lists sit next to the code rather than inside the
+package and the solver goes looking for them relative to its own file, so a plain `pip install .`
+dumps the code in site-packages, leaves the lists behind, and then can't find them.
 
-If you'd rather not install anything at all, `python src/solve.py` does the same job.. Although
-running anything in `testing/` does need it installed properly only runs once it's installed.
+It's a proper package now, so running the script file directly doesn't work any more. `python -m
+letterboxed.solve` gets you the same thing if you'd rather type that, and anything in `testing/`
+needs it installed as well.
 
 It doesn't stop at the shortest answer. Ask for up to 3 words and you get the 2 word solutions as
 well, grouped by word count and sorted shortest first inside each group. `-e` throws away anything
@@ -52,11 +53,11 @@ Collins has no proper nouns in it, so it's all lowercase. SCOWL covers US, GB (b
 `-ize`), Canadian and Australian spellings, no accents, and it keeps its capitalised words, which
 is the only reason `-c` has anything to do.
 
-`src/buildWordList.py` builds both. It pulls the raw sources down into `./sources` (git ignores
-that) and filters them:
+`src/letterboxed/buildWordList.py` builds both. It pulls the raw sources down into `./sources`
+(git ignores that) and filters them:
 
 ```
-python src/buildWordList.py
+python -m letterboxed.buildWordList
 ```
 
 It keeps words of 3 or more letters made of plain ASCII, and don't include any words that consist
@@ -68,9 +69,9 @@ change.
 | File | Purpose |
 | --- | --- |
 | `pyproject.toml` | Packaging, and the `letterboxed` command it installs |
-| `src/solve.py` | The command line bit: reads the puzzle, prints the answers |
-| `src/letterBoxed.py` | The actual solving, tracing words and chaining them up |
-| `src/buildWordList.py` | Pulls the raw sources down and filters them into the two lists |
+| `src/letterboxed/solve.py` | The command line bit: reads the puzzle, prints the answers |
+| `src/letterboxed/letterBoxed.py` | The actual solving, tracing words and chaining them up |
+| `src/letterboxed/buildWordList.py` | Pulls the sources down and filters them into the lists |
 | `words.txt` | Default word list |
 | `megaWords.txt` | The big one, used by `-b` |
 | `testing/timingPruning.py` | Times a puzzle with pruning on and off |
