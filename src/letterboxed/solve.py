@@ -27,11 +27,13 @@ def parseArgs():
                         help="only keep solutions using exactly the number of words given by -w")
     parser.add_argument("-l", "--limit", type=int, default=DEFAULT_PRINT_LIMIT, metavar="COUNT",
                         help="most solutions to print, 0 for all (default: %(default)s)")
-    parser.add_argument("-t", "--time", action="store_true",
+    parser.add_argument("-tm", "--time", action="store_true",
                         help="report how long the search itself took")
     parser.add_argument("-p", "--puzzle", nargs=SIDE_COUNT, metavar="SIDE",
                         help="the %d sides, %d letters each, instead of being prompted for them"
                              % (SIDE_COUNT, LETTERS_PER_SIDE))
+    parser.add_argument("-o", "--output", type=str, default=None, metavar="output",
+                        help="output file to wirte output to, leave blank to write to console only")
     return parser.parse_args()
 
 def checkPuzzle(sides):
@@ -95,19 +97,27 @@ def exactly(solutions, wordCount):
 
 def main():
     args = parseArgs()
+    try:
+        open(args.output, "w")
+    except PermissionError:
+        raise SystemExit("Invalid file name: '%s'" % args.output)
+    except OSError:
+        raise SystemExit("Invalid file name: '%s'" % args.output)
+
     wordFile = BIG_WORD_FILE if args.big else WORD_FILE
     sides = checkPuzzle(args.puzzle) if args.puzzle else readPuzzle()
-    # print(sides)
-    # sides = ('CBG', 'UAE', 'FLV', 'TDQ')
-    # sides = ('VTU', 'BWI', 'NAO', 'EHS')
-    # sides = ('ERA', 'VLC', 'TIN', 'OSU')
     words = list(findWords(wordFile, sides, args.caps))
+
     start = time.time()
     solutions = recursiveSolve(words, sides, args.words, not args.no_pruning)
     seconds = time.time() - start
 
     if args.exact:
         solutions = exactly(solutions, args.words)
+    if args.output != None:
+        with open(args.output, "w") as outputFile:
+            for chain in solutions:
+                outputFile.write(" - ".join(chain) + "\n")
     printSolutions(solutions, args.limit, seconds if args.time else None)
 
 if __name__ == "__main__":

@@ -5,3 +5,4 @@ sources/
 *.egg-info/
 build/
 dist/
+output.txt
