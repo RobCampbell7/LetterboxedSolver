@@ -33,7 +33,7 @@ def parseArgs():
                         help="the %d sides, %d letters each, instead of being prompted for them"
                              % (SIDE_COUNT, LETTERS_PER_SIDE))
     parser.add_argument("-o", "--output", type=str, default=None, metavar="output",
-                        help="output file to wirte output to, leave blank to write to console only")
+                        help="output file to write all solutions to, leave blank for none")
     return parser.parse_args()
 
 def checkPuzzle(sides):
@@ -97,12 +97,13 @@ def exactly(solutions, wordCount):
 
 def main():
     args = parseArgs()
-    try:
-        open(args.output, "w")
-    except PermissionError:
-        raise SystemExit("Invalid file name: '%s'" % args.output)
-    except OSError:
-        raise SystemExit("Invalid file name: '%s'" % args.output)
+    if args.output != None:
+        try:
+            open(args.output, "w")
+        except PermissionError:
+            raise SystemExit("Invalid file name: '%s'" % args.output)
+        except OSError:
+            raise SystemExit("Invalid file name: '%s'" % args.output)
 
     wordFile = BIG_WORD_FILE if args.big else WORD_FILE
     sides = checkPuzzle(args.puzzle) if args.puzzle else readPuzzle()
